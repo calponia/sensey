@@ -17,6 +17,7 @@
     package="com.github.nisrulz.senseysample">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -32,6 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TouchActivity"></activity>
+        <activity android:name=".CalponiaActivity"></activity>
     </application>
 
 </manifest>

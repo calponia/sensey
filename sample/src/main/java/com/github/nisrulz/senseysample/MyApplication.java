@@ -19,7 +19,27 @@ package com.github.nisrulz.senseysample;
 import android.app.Application;
 import com.squareup.leakcanary.LeakCanary;
 
+import org.json.JSONObject;
+
 public class MyApplication extends Application {
+
+    // STATE VARS
+    private JSONObject accessToken;
+    private String equipmentToken;
+
+    public JSONObject getAccessToken() {
+        return accessToken;
+    }
+    public void setAccessToken(JSONObject token) {
+        this.accessToken = token;
+    }
+
+    public String getEquipmentToken() {
+        return this.equipmentToken;
+    }
+    public void setEquipmentToken(String token) {
+        this.equipmentToken = token;
+    }
 
     @Override
     public void onCreate() {
@@ -31,5 +51,7 @@ public class MyApplication extends Application {
         }
         LeakCanary.install(this);
         // Normal app init code...
+
+        this.accessToken = null;
     }
 }
