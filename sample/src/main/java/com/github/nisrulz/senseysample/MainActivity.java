@@ -48,6 +48,9 @@ import com.github.nisrulz.sensey.TiltDirectionDetector;
 import com.github.nisrulz.sensey.TiltDirectionDetector.TiltDirectionListener;
 import com.github.nisrulz.sensey.WaveDetector.WaveListener;
 import com.github.nisrulz.sensey.WristTwistDetector.WristTwistListener;
+
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 
 /**
@@ -205,6 +208,21 @@ public class MainActivity extends AppCompatActivity
         // Reset the result view
         resetResultInView(txtViewResult);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Equipment equipment = ((MyApplication) getApplication()).getEquipmentToken();
+        if (equipment != null) {
+            Button btnCalponiaEvent = findViewById(R.id.btn_calponia);
+            try {
+                btnCalponiaEvent.setText(equipment.token.getString("id"));
+            } catch (Exception e) {
+                btnCalponiaEvent.setText(e.getMessage());
+            }
+            ((MyApplication) getApplication()).setAccessToken(equipment.token);
+        }
     }
 
     @Override
@@ -374,66 +392,85 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onChop() {
+        CalponiaREST.Relay(this, "onChop");
         setResultTextView("Chop Detected!", false);
     }
 
     @Override
     public void onDark() {
+        CalponiaREST.Relay(this, "onDark");
         setResultTextView("Dark", false);
     }
 
     @Override
     public void onDevicePickedUp() {
+        CalponiaREST.Relay(this, "onDevicePickedUp");
         setResultTextView("Device Picked up Detected!", false);
     }
 
     @Override
     public void onDevicePutDown() {
+        CalponiaREST.Relay(this, "onDevicePutDown");
         setResultTextView("Device Put down Detected!", false);
     }
 
     @Override
     public void onFaceDown() {
+        CalponiaREST.Relay(this, "onFaceDown");
         setResultTextView("Face Down", false);
     }
 
     @Override
     public void onFaceUp() {
+        CalponiaREST.Relay(this, "onFaceUp");
         setResultTextView("Face UP", false);
     }
 
     @Override
     public void onFar() {
+        CalponiaREST.Relay(this, "onFar");
         setResultTextView("Far", false);
     }
 
     @Override
     public void onLeftSideUp() {
+        CalponiaREST.Relay(this, "onLeftSideUp");
         setResultTextView("Left Side UP", false);
     }
 
     @Override
     public void onLight() {
+        CalponiaREST.Relay(this, "onLight");
         setResultTextView("Not Dark", false);
     }
 
     @Override
     public void onMovement() {
+        CalponiaREST.Relay(this, "onMovement");
         setResultTextView("Movement Detected!", false);
     }
 
     @Override
     public void onNear() {
+        CalponiaREST.Relay(this, "onNear");
         setResultTextView("Near", false);
     }
 
     @Override
     public void onRightSideUp() {
+        CalponiaREST.Relay(this, "onRightSideUp");
         setResultTextView("Right Side UP", false);
     }
 
     @Override
     public void onRotation(float angleInAxisX, float angleInAxisY, float angleInAxisZ) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("angleInAxisX", angleInAxisX);
+            data.put("angleInAxisY", angleInAxisY);
+            data.put("angleInAxisZ", angleInAxisZ);
+        } catch (Exception e) {}
+        CalponiaREST.Relay(this, "onRotation", data);
         setResultTextView("Rotation in Axis Detected(deg):\nX="
                 + angleInAxisX
                 + ",\nY="
@@ -444,57 +481,71 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onScooped() {
+        CalponiaREST.Relay(this, "onScooped");
         setResultTextView("Scoop Gesture Detected!", false);
     }
 
     @Override
     public void onShakeDetected() {
+        CalponiaREST.Relay(this, "onShakeDetected");
         setResultTextView("Shake Detected!", false);
     }
 
     @Override
     public void onShakeStopped() {
+        CalponiaREST.Relay(this, "onShakeStopped");
         setResultTextView("Shake Stopped!", false);
     }
 
     @Override
     public void onSoundDetected(float level) {
-
+        JSONObject data = new JSONObject();
+        try {
+            data.put("level", level);
+        } catch (Exception e) {}
+        CalponiaREST.Relay(this, "onSoundDetected", data);
         setResultTextView(new DecimalFormat("##.##").format(level) + "dB", true);
     }
 
     @Override
     public void onStationary() {
+        CalponiaREST.Relay(this, "onStationary");
         setResultTextView("Device Stationary!", false);
     }
 
     @Override
     public void onTiltInAxisX(int direction) {
+        CalponiaREST.Relay(this, "onTiltInAxisX");
         displayResultForTiltDirectionDetector(direction, "X");
     }
 
     @Override
     public void onTiltInAxisY(int direction) {
+        CalponiaREST.Relay(this, "onTiltInAxisY");
         displayResultForTiltDirectionDetector(direction, "Y");
     }
 
     @Override
     public void onTiltInAxisZ(int direction) {
+        CalponiaREST.Relay(this, "onTiltInAxisZ");
         displayResultForTiltDirectionDetector(direction, "Z");
     }
 
     @Override
     public void onTopSideUp() {
+        CalponiaREST.Relay(this, "onTopSideUp");
         setResultTextView("Top Side UP", false);
     }
 
     @Override
     public void onWave() {
+        CalponiaREST.Relay(this, "onWave");
         setResultTextView("Wave Detected!", false);
     }
 
     @Override
     public void onWristTwist() {
+        CalponiaREST.Relay(this, "onWristTwist");
         setResultTextView("Wrist Twist Detected!", false);
     }
 
@@ -521,6 +572,7 @@ public class MainActivity extends AppCompatActivity
                 .append(typeOfActivity)
                 .append("\n");
 
+        CalponiaREST.Relay(this, "stepInformation");
         setResultTextView(data.toString(), true);
     }
 
@@ -531,6 +583,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             dir = "AntiClockWise";
         }
+
+        CalponiaREST.Relay(this, "displayResultForTiltDirectionDetector");
         setResultTextView("Tilt in " + axis + " Axis: " + dir, false);
     }
 

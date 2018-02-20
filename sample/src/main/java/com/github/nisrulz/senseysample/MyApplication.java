@@ -25,7 +25,7 @@ public class MyApplication extends Application {
 
     // STATE VARS
     private JSONObject accessToken;
-    private String equipmentToken;
+    private Equipment equipment;
 
     public JSONObject getAccessToken() {
         return accessToken;
@@ -34,11 +34,11 @@ public class MyApplication extends Application {
         this.accessToken = token;
     }
 
-    public String getEquipmentToken() {
-        return this.equipmentToken;
+    public Equipment getEquipmentToken() {
+        return this.equipment;
     }
-    public void setEquipmentToken(String token) {
-        this.equipmentToken = token;
+    public void setEquipmentToken(Equipment equipment) {
+        this.equipment = equipment;
     }
 
     @Override

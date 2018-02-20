@@ -18,11 +18,13 @@ package com.github.nisrulz.senseysample;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
@@ -45,8 +47,6 @@ public class CalponiaActivity extends AppCompatActivity {
 
     private static final boolean DEBUG = true;
 
-    Handler handler;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +57,19 @@ public class CalponiaActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Login();
+            }
+        });
+
+        ListView list = findViewById(R.id.listView_equipments);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Equipment equipment = (Equipment) parent.getItemAtPosition(position);
+
+                Log.i(LOGTAG, equipment.toString());
+                ((MyApplication) getApplication()).setEquipmentToken(equipment);
+
+                startActivity(new Intent(CalponiaActivity.this, MainActivity.class));
             }
         });
 
@@ -87,6 +100,7 @@ public class CalponiaActivity extends AppCompatActivity {
             Log.i(LOGTAG, data.toString());
 
             // Login to calponia
+            ((MyApplication) getApplication()).setAccessToken(null);
             CalponiaREST.Call(new Request.Params(this, CalponiaREST.LOGIN, "POST", data) {
                 @Override
                 void onPostExecute (JSONObject data) {
@@ -136,9 +150,9 @@ public class CalponiaActivity extends AppCompatActivity {
         try {
             String userId = ((MyApplication) getApplication()).getAccessToken().getString("userId");
             Log.i(LOGTAG, userId);
-            final ArrayList<String> equipmentList = new ArrayList<String>();
+            final ArrayList<Equipment> equipmentList = new ArrayList<>();
 
-            final ArrayAdapter<String> adapter = new ArrayAdapter<>
+            final ArrayAdapter<Equipment> adapter = new ArrayAdapter<>
                     (this, android.R.layout.simple_list_item_1, equipmentList);
 
             ListView list = findViewById(R.id.listView_equipments);
@@ -158,7 +172,10 @@ public class CalponiaActivity extends AppCompatActivity {
                                     JSONObject equipment = result.getJSONObject(i);
                                     if (equipment.getBoolean("iotDevice")) {
                                         hasIoT = true;
-                                        equipmentList.add(equipment.getString("id"));
+                                        equipmentList.add(new Equipment(
+                                                equipment.getJSONObject("accessToken"),
+                                                equipment.getString("name"),
+                                                project.getString("name")));
                                     }
                                 }
                                 // Personal is a internal project

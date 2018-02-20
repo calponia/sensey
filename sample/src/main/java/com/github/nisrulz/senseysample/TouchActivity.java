@@ -16,6 +16,7 @@
 
 package com.github.nisrulz.senseysample;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import com.github.nisrulz.sensey.PinchScaleDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.TouchTypeDetector;
 
+import org.json.JSONObject;
+
 /**
  * The type Touch activity.
  */
@@ -40,6 +43,8 @@ public class TouchActivity extends AppCompatActivity
     private static final boolean DEBUG = true;
 
     private TextView txtResult;
+
+    Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,8 @@ public class TouchActivity extends AppCompatActivity
         SwitchCompat swt7 = (SwitchCompat) findViewById(R.id.Switch7);
         swt7.setOnCheckedChangeListener(this);
         swt7.setChecked(false);
+
+        ctx = this;
     }
 
     @Override
@@ -139,15 +146,23 @@ public class TouchActivity extends AppCompatActivity
                         } else {
                             setResultTextView("Scaling In");
                         }
+
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("isScalingOut", isScalingOut);
+                        } catch (Exception e) {}
+                        CalponiaREST.Relay(ctx, "onScale", data);
                     }
 
                     @Override
                     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+                        CalponiaREST.Relay(ctx, "onScaleEnd");
                         setResultTextView("Scaling : Stopped");
                     }
 
                     @Override
                     public void onScaleStart(ScaleGestureDetector scaleGestureDetector) {
+                        CalponiaREST.Relay(ctx, "onScaleStart");
                         setResultTextView("Scaling : Started");
                     }
                 });
@@ -158,11 +173,13 @@ public class TouchActivity extends AppCompatActivity
                 .startTouchTypeDetection(TouchActivity.this, new TouchTypeDetector.TouchTypListener() {
                     @Override
                     public void onDoubleTap() {
+                        CalponiaREST.Relay(ctx, "onDoubleTap");
                         setResultTextView("Double Tap");
                     }
 
                     @Override
                     public void onLongPress() {
+                        CalponiaREST.Relay(ctx, "onLongPress");
                         setResultTextView("Long press");
                     }
 
@@ -185,10 +202,17 @@ public class TouchActivity extends AppCompatActivity
                                 // Do nothing
                                 break;
                         }
+
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("scrollDirection", scrollDirection);
+                        } catch (Exception e) {}
+                        CalponiaREST.Relay(ctx, "onScale", data);
                     }
 
                     @Override
                     public void onSingleTap() {
+                        CalponiaREST.Relay(ctx, "onSingleTap");
                         setResultTextView("Single Tap");
                     }
 
@@ -211,15 +235,23 @@ public class TouchActivity extends AppCompatActivity
                                 //do nothing
                                 break;
                         }
+
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("swipeDirection", swipeDirection);
+                        } catch (Exception e) {}
+                        CalponiaREST.Relay(ctx, "onSwipe", data);
                     }
 
                     @Override
                     public void onThreeFingerSingleTap() {
+                        CalponiaREST.Relay(ctx, "onThreeFingerSingleTap");
                         setResultTextView("Three Finger Tap");
                     }
 
                     @Override
                     public void onTwoFingerSingleTap() {
+                        CalponiaREST.Relay(ctx, "onTwoFingerSingleTap");
                         setResultTextView("Two Finger Tap");
                     }
                 });
