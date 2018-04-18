@@ -92,7 +92,7 @@ public class Request extends AsyncTask<Request.Params, Void, JSONObject> {
         } catch(Exception e) {
             try {
                 return new JSONObject(String.format("{\"error\": \"%s\"}", e.getMessage()));
-            } catch (Exception _) {}
+            } catch (Exception _e) {}
         } finally {
             if(connection != null) {
                 connection.disconnect();
