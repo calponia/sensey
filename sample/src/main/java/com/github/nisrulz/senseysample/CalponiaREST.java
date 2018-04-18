@@ -12,10 +12,10 @@ public class CalponiaREST extends Application  {
     private static final String LOGTAG = "CalponiaREST";
 
     // URLS
-    public static final String LOGIN = "https://api-internal.calponia-bcx.de/api/users/login";
-    public static final String PROJECTS = "https://api-internal.calponia-bcx.de/api/users/%s/projects";
-    public static final String EQUIPMENTS = "https://api-internal.calponia-bcx.de/api/projects/%s/equipment";
-    public static final String RELAY = "https://iot.calponia-bcx.de/sensey";
+    public static final String LOGIN = "https://api-internal.calponia-beta.de/api/users/login";
+    public static final String PROJECTS = "https://api-internal.calponia-beta.de/api/users/%s/projects";
+    public static final String EQUIPMENTS = "https://api-internal.calponia-beta.de/api/projects/%s/equipment";
+    public static final String RELAY = "https://iot.calponia-beta.de/sensey";
 
     private static long LastRequest = 0;
 
